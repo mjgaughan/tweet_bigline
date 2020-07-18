@@ -10,8 +10,8 @@ import urllib.request
 
 
 #setting up Tweepy authentication with the Twitter API
-auth = tweepy.OAuthHandler("enter credentials here", "enter credentials here")
-auth.set_access_token("enter credentials here", "enter credentials here")
+auth = tweepy.OAuthHandler("API Keys", "API Keys")
+auth.set_access_token("API Keys", "API Keys")
 
 api = tweepy.API(auth)
 all_data = []
@@ -51,7 +51,7 @@ def get_financials(ticker, save_array, now):
     print(save_array[0])
     print("--------")
     print("Current time: " + str(save_array[1]))
-    print(ticker + " stock price at the time of tweet: " + str(save_array[2]))
+    print(ticker + " stock price at the time of tweet: " + str(save_array[4]))
     #grabbing current BTC price
     get_bitcoin(save_array)
     print("--------")
@@ -71,13 +71,29 @@ def get_financials(ticker, save_array, now):
 
     save_array.append(df1[1])
     print("20 minutes later:")
-    print(ticker + " stock price 20 minutes after tweet: " + str(save_array[4]))
+    print(ticker + " stock price 20 minutes after tweet: " + str(save_array[6]))
     get_bitcoin(save_array)
+    #formatting the tweet url to result in a quote tweet for the sent out tweet
+    tweet_url = "https://twitter.com/" + save_array[2] + "/status/" + save_array[3]
+    save_array.append(tweet_url)
+    save_array.append(ticker)
+    #print(save_array)
+    rt_with_comment(save_array)
+
+
+def rt_with_comment(save_array):
+    tweet_release = (save_array[9] + " stock price at the time of tweet: " + str(save_array[4]) + "\n" +
+                        "BTC at time of tweet: " + str(save_array[5]) + "\n" +
+                        "----20 minutes later ----" + "\n" +
+                        save_array[9] + " stock price 20 minutes after tweet: " + str(save_array[6]) + "\n" +
+                        "BTC 20 minutes after tweet: " + str(save_array[7]) + "\n" +
+                        save_array[8])
+    api.update_status(tweet_release)
+    #print("hi")
 
 #getting current bitcoin price from Nomics API
 def get_bitcoin(save_array):
-    #below enter unique url with Nomics API credential key within
-    url = ""
+    url = "unique url from Nomics API with api key inside"
     #snatching big chunk of info
     BTC_info = urllib.request.urlopen(url).read()
     #grabbing just the current price
@@ -95,6 +111,9 @@ class MyStreamListener(tweepy.StreamListener):
         #tossing da data into the array
         new_line.append(status.text)
         new_line.append(status.created_at)
+        new_line.append(status.user.screen_name)
+        new_line.append(status.id_str)
+        #print(status.id_str)
         get_financials("TWTR", new_line, now)
 
         #da big master array for all data
@@ -114,7 +133,7 @@ def monitoring(tracking):
     #Elon Musk: 44196397
     #Jack: 12
     #myStream.filter(follow=['']) (follow is for following specific accounts)
-    myStream.filter(track=[tracking], is_async=True)
+    myStream.filter(follow=['12'], is_async=True)
 
 if __name__ == "__main__":
     #writing to csv
