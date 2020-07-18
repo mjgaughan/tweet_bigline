@@ -1,6 +1,6 @@
 # tweet_bigline
 
-This is a project to record the effects/correlation of tech CEOs'/executives' twitter behavior on their companyies' stock prices. Inspired by a thread by [@mcclure111](https://twitter.com/mcclure111)
+This is a project to record the effects/correlation of tech CEOs'/executives' twitter behavior on their companies' stock prices. Inspired by a Twitter thread by [@mcclure111](https://twitter.com/mcclure111).
 
 # muskrat_0.py
 This is the first file in the project, at the moment it listens for a tweet from a given user or pertaining to a given subject, once there is a new tweet, the program 
